@@ -1,3 +1,4 @@
+import moment from 'moment'
 
 class WmsTrackingEvent {
   constructor(dateTime, description, city, state, zip, country) {
@@ -9,16 +10,41 @@ class WmsTrackingEvent {
     this.country = country
   }
 
+  getDateTime() {
+    const eventDate = this.getDate()
+    const eventTime = this.getTime()
+    const eventDateTime = eventDate && eventTime ? `${this.getDate()}, ${this.getTime()}` : ""
+    return eventDateTime
+  }
+
+  getDate() {
+    const eventDate = this.dateTime ? moment(this.dateTime).format("MMM D") : ""
+    return eventDate
+  }
+
+  getTime() {
+    const eventTime = this.dateTime ? moment(this.dateTime).format("h:mm A") : ""
+    return eventTime
+  }
+
   getFullLocation() {
     return `${this.city}, ${this.state} ${this.zip} ${this.country}`
   }
 
   getShortLocation() {
-    return `${this.city}, ${this.state}`
-  }
+    let location = ""
 
-  getIntlLocation() {
-    return `${this.city}, ${this.country}`
+    if(this.city && this.state) {
+      location = `${this.city}, ${this.state}`
+    } else if(this.city && this.country) {
+      location = `${this.city}, ${this.country}`
+    } else if(this.city) {
+      location = this.city
+    } else if(this.country) {
+      location = this.country
+    }
+
+    return location
   }
 }
 

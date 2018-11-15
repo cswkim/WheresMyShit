@@ -1,6 +1,7 @@
 const config = {
   colorBase: '#05a838',
   colorSecondary: '#c7c7cd',
+  colorTertiary: '#f1eeee',
   colorTextBase: 'white',
   storageKeyIdent: '@WMS_STORE',
 }

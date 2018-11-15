@@ -19,6 +19,9 @@ function start() {
                 color: config.colorBase,
               },
             },
+            layout: {
+              backgroundColor: config.colorTertiary,
+            },
           },
           children: [
             {

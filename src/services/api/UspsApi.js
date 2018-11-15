@@ -55,16 +55,18 @@ class UspsApi extends WmsApi {
   }
 
   parseEvent(node) {
-    const eventDesc = node.getElementsByTagName('Event')[0].value
-    const eventDate = node.getElementsByTagName('EventDate')[0].value
-    const eventTime = node.getElementsByTagName('EventTime')[0].value
-    const eventCity = node.getElementsByTagName('EventCity')[0].value
-    const eventState = node.getElementsByTagName('EventState')[0].value
-    const eventZipCode = node.getElementsByTagName('EventZIPCode')[0].value
-    const eventCountry = node.getElementsByTagName('EventCountry')[0].value
+    const eventDesc = node.getElementsByTagName('Event')[0].value.trim()
+    const eventDate = node.getElementsByTagName('EventDate')[0].value.trim()
+    const eventTime = node.getElementsByTagName('EventTime')[0].value.trim()
+    const eventCity = node.getElementsByTagName('EventCity')[0].value.trim()
+    const eventState = node.getElementsByTagName('EventState')[0].value.trim()
+    const eventZipCode = node.getElementsByTagName('EventZIPCode')[0].value.trim()
+    const eventCountry = node.getElementsByTagName('EventCountry')[0].value.trim()
+
+    const validDate = eventDate && eventTime ? new Date(`${eventDate} ${eventTime}`) : null
 
     const eventObj = new WmsTrackingEvent(
-      new Date(`${eventDate} ${eventTime}`),
+      validDate,
       eventDesc,
       eventCity,
       eventState,

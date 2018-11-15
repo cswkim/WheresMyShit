@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { carriers, config } from '../config'
-import { matchTrackingPattern } from '../util'
+import { getCarrierApi, matchTrackingPattern } from '../util'
 import { WmsStorage } from '../services/WmsStorage'
 import PackageForm from '../components/PackageForm'
+import TrackingEventListItem from '../components/TrackingEventListItem'
 
 class ItemScreen extends Component {
   static get options() {
@@ -35,6 +36,7 @@ class ItemScreen extends Component {
       description: null,
       carrier: null,
       trackingNum: null,
+      history: [],
     }
 
     Navigation.events().bindComponent(this)
@@ -47,6 +49,13 @@ class ItemScreen extends Component {
   componentDidMount() {
     if(this.props.isEdit) {
       WmsStorage.getItem(this.props.storeKey).then(item => {
+        const apiObj = getCarrierApi(item.carrier)
+        apiObj.getAllTracking(item.trackingNum).then(trackingData => {
+          this.setState({history: apiObj.parseAllTracking(trackingData.data)})
+        }, error => {
+          alert(`API ERROR: ${error}`)
+        })
+
         this.setState({
           description: item.description,
           carrier: item.carrier,
@@ -120,6 +129,8 @@ class ItemScreen extends Component {
   }
 
   render() {
+    const trackingHistory = this.state.history
+
     return (
       <View>
         {this.props.isEdit && (
@@ -137,7 +148,16 @@ class ItemScreen extends Component {
         />
 
         {this.props.isEdit && (
-          <Text style={{backgroundColor:'pink'}}>Tracking history will go here</Text>
+          <FlatList
+            data={trackingHistory}
+            renderItem={({item}) => (
+              <TrackingEventListItem event={item} />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            ListHeaderComponent={() => (
+              <Text style={styles.groupHeader}>Tracking History</Text>
+            )}
+          />
         )}
 
         {this.props.isEdit && (
@@ -147,5 +167,15 @@ class ItemScreen extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  groupHeader: {
+    color: config.colorSecondary,
+    backgroundColor: config.colorTertiary,
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: config.colorSecondary,
+  },
+})
 
 module.exports = ItemScreen
