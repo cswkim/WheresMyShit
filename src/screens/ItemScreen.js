@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { carriers, config } from '../config'
 import { matchTrackingPattern } from '../util'
@@ -10,9 +10,6 @@ class ItemScreen extends Component {
   static get options() {
     return {
       topBar: {
-        title: {
-          text: 'Edit',
-        },
         leftButtons: [
           {
             id: 'cancelButton',
@@ -45,6 +42,20 @@ class ItemScreen extends Component {
     this.onChangeDescription = this.onChangeDescription.bind(this)
     this.onChangeTrackingNum = this.onChangeTrackingNum.bind(this)
     this.validateInput = this.validateInput.bind(this)
+  }
+
+  componentDidMount() {
+    if(this.props.isEdit) {
+      WmsStorage.getItem(this.props.storeKey).then(item => {
+        this.setState({
+          description: item.description,
+          carrier: item.carrier,
+          trackingNum: item.trackingNum,
+        })
+      }, error => {
+        alert(`LOAD ERROR: ${error}`)
+      })
+    }
   }
 
   navigationButtonPressed({ buttonId }) {
@@ -111,6 +122,10 @@ class ItemScreen extends Component {
   render() {
     return (
       <View>
+        {this.props.isEdit && (
+          <Text style={{backgroundColor:'blue'}}>Map will go here</Text>
+        )}
+
         <PackageForm
           parentComponentId={this.props.componentId}
           description={this.state.description}
@@ -120,6 +135,14 @@ class ItemScreen extends Component {
           onChangeDescription={this.onChangeDescription}
           onChangeTrackingNum={this.onChangeTrackingNum}
         />
+
+        {this.props.isEdit && (
+          <Text style={{backgroundColor:'pink'}}>Tracking history will go here</Text>
+        )}
+
+        {this.props.isEdit && (
+          <Text style={{backgroundColor:'red'}}>Delete button will go here</Text>
+        )}
       </View>
     )
   }

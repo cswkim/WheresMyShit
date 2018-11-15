@@ -50,7 +50,17 @@ class HomeScreen extends Component {
   navigationButtonPressed({ buttonId }) {
     Navigation.push(this.props.componentId, {
       component: {
-        name: 'AddScreen'
+        name: 'ItemScreen',
+        passProps: {
+          isEdit: false,
+        },
+        options: {
+          topBar: {
+            title: {
+              text: 'Add'
+            }
+          }
+        },
       }
     })
   }
@@ -58,7 +68,18 @@ class HomeScreen extends Component {
   onPressItem(key) {
     Navigation.push(this.props.componentId, {
       component: {
-        name: 'EditScreen'
+        name: 'ItemScreen',
+        passProps: {
+          isEdit: true,
+          storeKey: key,
+        },
+        options: {
+          topBar: {
+            title: {
+              text: 'Edit'
+            }
+          }
+        },
       }
     })
   }
