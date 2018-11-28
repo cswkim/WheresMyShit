@@ -9,7 +9,13 @@ function getCarrierApi(carrier) {
 
   switch(carrier) {
     case 'fedex':
-      subApi = new FedexApi(apiConf.url, apiConf.user, apiConf.key)
+      subApi = new FedexApi(
+        apiConf.url,
+        apiConf.user,
+        apiConf.key,
+        apiConf.accountNum,
+        apiConf.meterNum,
+      )
       break
     case 'japanPost':
       subApi = new JapanPostApi(apiConf.url, apiConf.user, apiConf.key)
