@@ -67,7 +67,7 @@ class FedexApi extends WmsApi {
     })
   }
 
-  getMappedStatus(trackingEventDesc) {console.log(trackingEventDesc)
+  getMappedStatus(trackingEventDesc) {
     let mapped = null
     let toCheck = trackingEventDesc.toLowerCase()
 
