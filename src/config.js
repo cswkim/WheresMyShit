@@ -1,3 +1,11 @@
+import {
+  API_FEDEX_USER,
+  API_FEDEX_KEY,
+  API_FEDEX_ACCOUNT_NUM,
+  API_FEDEX_METER_NUM,
+  API_USPS_USER,
+} from 'react-native-dotenv'
+
 const config = {
   colorBase: '#05a838',
   colorSecondary: '#c7c7cd',
@@ -22,9 +30,11 @@ const carriers = {
     pattern: /[0-9]{12}/,
     logoPath: require('./assets/img/logo-fedex.png'),
     api: {
-      url: 'https://secure.shippingapis.com/ShippingAPI.dll?API=TrackV2',
-      user: '169DALOF5450',
-      key: '',
+      url: 'https://wsbeta.fedex.com:443/web-services',
+      user: API_FEDEX_USER,
+      key: API_FEDEX_KEY,
+      accountNum: API_FEDEX_ACCOUNT_NUM,
+      meterNum: API_FEDEX_METER_NUM,
     },
   },
   japanPost: {
@@ -43,8 +53,7 @@ const carriers = {
     logoPath: require('./assets/img/logo-usps.png'),
     api: {
       url: 'https://secure.shippingapis.com/ShippingAPI.dll?API=TrackV2',
-      user: '169DALOF5450',
-      key: '',
+      user: API_USPS_USER,
     },
   },
 }
