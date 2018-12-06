@@ -1,5 +1,13 @@
 import React, { Component } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import {
+  Alert,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { carriers, config } from '../config'
 import { getCarrierApi, matchTrackingPattern } from '../util'
@@ -43,6 +51,8 @@ class ItemScreen extends Component {
     this.onChangeCarrier = this.onChangeCarrier.bind(this)
     this.onChangeDescription = this.onChangeDescription.bind(this)
     this.onChangeTrackingNum = this.onChangeTrackingNum.bind(this)
+    this.onDeleteConfirm = this.onDeleteConfirm.bind(this)
+    this.onDeletePrompt = this.onDeletePrompt.bind(this)
     this.validateInput = this.validateInput.bind(this)
   }
 
@@ -115,6 +125,25 @@ class ItemScreen extends Component {
     this.setState({trackingNum: newTrackingNum})
   }
 
+  onDeletePrompt() {
+    Alert.alert(
+      "Delete this package?",
+      "You cannot undo this removal.",
+      [
+        {text: "Cancel", style: 'cancel'},
+        {text: "Delete", onPress: () => this.onDeleteConfirm(), style: 'destructive'},
+      ],
+    )
+  }
+
+  onDeleteConfirm() {
+    WmsStorage.removeItem(this.props.storeKey).then(removed => {
+      Navigation.popToRoot(this.props.componentId)
+    }, error => {
+      alert(`DELETE ERROR: ${error}`)
+    })
+  }
+
   validateInput() {
     let errors = []
 
@@ -132,7 +161,7 @@ class ItemScreen extends Component {
     const trackingHistory = this.state.history
 
     return (
-      <View>
+      <ScrollView>
         {this.props.isEdit && (
           <Text style={{backgroundColor:'blue'}}>Map will go here</Text>
         )}
@@ -148,22 +177,28 @@ class ItemScreen extends Component {
         />
 
         {this.props.isEdit && (
+          <Text style={styles.groupHeader}>Tracking History</Text>
+        )}
+
+        {this.props.isEdit && (
           <FlatList
+            style={styles.history}
             data={trackingHistory}
             renderItem={({item}) => (
               <TrackingEventListItem event={item} />
             )}
             keyExtractor={(item, index) => index.toString()}
-            ListHeaderComponent={() => (
-              <Text style={styles.groupHeader}>Tracking History</Text>
-            )}
           />
         )}
 
         {this.props.isEdit && (
-          <Text style={{backgroundColor:'red'}}>Delete button will go here</Text>
+          <View style={styles.deleteButtonWrapper}>
+            <TouchableOpacity onPress={this.onDeletePrompt} style={styles.deleteButton}>
+              <Text style={styles.deleteButtonText}>Delete Package</Text>
+            </TouchableOpacity>
+          </View>
         )}
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -173,8 +208,29 @@ const styles = StyleSheet.create({
     color: config.colorSecondary,
     backgroundColor: config.colorTertiary,
     padding: 16,
+  },
+  history: {
+    borderTopWidth: 1,
+    borderTopColor: config.colorSecondary,
+  },
+  deleteButtonWrapper: {
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: config.colorTertiary,
+  },
+  deleteButton: {
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderTopWidth: 1,
+    borderTopColor: config.colorSecondary,
     borderBottomWidth: 1,
     borderBottomColor: config.colorSecondary,
+    backgroundColor: 'red',
+  },
+  deleteButtonText: {
+    textAlign: 'center',
+    color: config.colorTextBase,
+    fontWeight: 'bold',
   },
 })
 
