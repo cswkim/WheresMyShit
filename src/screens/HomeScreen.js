@@ -29,11 +29,13 @@ class HomeScreen extends Component {
 
     this.state = {
       allKeys: [],
+      isFetching: false,
     }
 
     Navigation.events().bindComponent(this)
     this.fetchKeys = this.fetchKeys.bind(this)
     this.onPressItem = this.onPressItem.bind(this)
+    this.onRefresh = this.onRefresh.bind(this)
     this.onRemoveItem = this.onRemoveItem.bind(this)
   }
 
@@ -42,8 +44,13 @@ class HomeScreen extends Component {
   }
 
   fetchKeys() {
+    this.setState({isFetching: true})
+
     WmsStorage.getAllKeys().then(keys => {
-      this.setState({allKeys: keys})
+      this.setState({
+        allKeys: keys,
+        isFetching: false,
+      })
     })
   }
 
@@ -84,6 +91,10 @@ class HomeScreen extends Component {
     })
   }
 
+  onRefresh() {
+    this.fetchKeys()
+  }
+
   onRemoveItem(key) {
     WmsStorage.removeItem(key).then(removed => {
       this.fetchKeys()
@@ -93,10 +104,10 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const allKeys = this.state.allKeys
+    const { allKeys, isFetching } = this.state
 
     return (
-      <View>
+      <View style={{flex:1}}>
         <FlatList
           data={allKeys}
           renderItem={({item}) => (
@@ -106,6 +117,8 @@ class HomeScreen extends Component {
               pressCallback={this.onPressItem}
             />
           )}
+          onRefresh={() => this.onRefresh()}
+          refreshing={isFetching}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
