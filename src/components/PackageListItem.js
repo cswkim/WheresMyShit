@@ -4,6 +4,7 @@ import Swipeout from 'react-native-swipeout'
 import { carriers, config, status } from '../config'
 import { getCarrierApi } from '../util'
 import { WmsStorage } from '../services/WmsStorage'
+import LoadingOverlay from '../components/LoadingOverlay'
 
 class PackageListItem extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class PackageListItem extends Component {
     this.state = {
       description: null,
       eta: null,
+      isFetching: false,
       location: null,
       logoPath: null,
       status: status.unknown,
@@ -21,6 +23,8 @@ class PackageListItem extends Component {
   }
 
   componentDidMount() {
+    this.setState({isFetching: true})
+
     WmsStorage.getItem(this.props.storeKey).then(item => {
       const apiObj = getCarrierApi(item.carrier)
       apiObj.getCurrentTracking(item.trackingNum).then(trackingData => {
@@ -30,6 +34,8 @@ class PackageListItem extends Component {
         })
       }, error => {
         alert(`API ERROR: ${error}`)
+      }).finally(() => {
+        this.setState({isFetching: false})
       })
 
       this.setState({
@@ -46,7 +52,7 @@ class PackageListItem extends Component {
   }
 
   render() {
-    const { description, eta, location, logoPath, status } = this.state
+    const { description, eta, isFetching, location, logoPath, status } = this.state
     const statusStr = status.display
 
     return (
@@ -55,6 +61,8 @@ class PackageListItem extends Component {
         backgroundColor='#fff'
       >
         <TouchableOpacity onPress={() => this.props.pressCallback(this.props.storeKey)}>
+          {isFetching && <LoadingOverlay />}
+
           <View style={styles.item}>
             <Image
               source={logoPath}
