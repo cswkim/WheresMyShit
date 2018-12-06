@@ -93,11 +93,7 @@ class ItemScreen extends Component {
         }
         WmsStorage.saveItem(Date.now().toString(), toSave)
           .then(item => {
-            Navigation.push(this.props.componentId, {
-              component: {
-                name: 'HomeScreen'
-              }
-            })
+            Navigation.popToRoot(this.props.componentId)
           }, error => {
             alert(`SAVE ERROR: ${error}`)
           })
