@@ -12,6 +12,7 @@ import { Navigation } from 'react-native-navigation'
 import { carriers, config } from '../config'
 import { getCarrierApi, matchTrackingPattern } from '../util'
 import { WmsStorage } from '../services/WmsStorage'
+import LoadingOverlay from '../components/LoadingOverlay'
 import PackageForm from '../components/PackageForm'
 import TrackingEventListItem from '../components/TrackingEventListItem'
 
@@ -43,6 +44,7 @@ class ItemScreen extends Component {
     this.state = {
       description: null,
       carrier: null,
+      isFetching: false,
       trackingNum: null,
       history: [],
     }
@@ -60,10 +62,15 @@ class ItemScreen extends Component {
     if(this.props.isEdit) {
       WmsStorage.getItem(this.props.storeKey).then(item => {
         const apiObj = getCarrierApi(item.carrier)
+
+        this.setState({isFetching: true})
+
         apiObj.getAllTracking(item.trackingNum).then(trackingData => {
           this.setState({history: apiObj.parseAllTracking(trackingData.data)})
         }, error => {
           alert(`API ERROR: ${error}`)
+        }).finally(() => {
+          this.setState({isFetching: false})
         })
 
         this.setState({
@@ -154,7 +161,7 @@ class ItemScreen extends Component {
   }
 
   render() {
-    const trackingHistory = this.state.history
+    const { history, isFetching } = this.state
 
     return (
       <ScrollView>
@@ -177,14 +184,18 @@ class ItemScreen extends Component {
         )}
 
         {this.props.isEdit && (
-          <FlatList
-            style={styles.history}
-            data={trackingHistory}
-            renderItem={({item}) => (
-              <TrackingEventListItem event={item} />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          <View>
+            {isFetching && <LoadingOverlay />}
+
+            <FlatList
+              style={styles.history}
+              data={history}
+              renderItem={({item}) => (
+                <TrackingEventListItem event={item} />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
         )}
 
         {this.props.isEdit && (
@@ -206,6 +217,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   history: {
+    minHeight: 80,
     borderTopWidth: 1,
     borderTopColor: config.colorSecondary,
   },

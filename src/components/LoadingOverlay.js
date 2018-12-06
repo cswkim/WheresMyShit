@@ -25,8 +25,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    opacity: 0.75,
-    backgroundColor: config.colorSecondary,
+    backgroundColor: 'rgba(199, 199, 205, 0.5)',
   },
 })
 
