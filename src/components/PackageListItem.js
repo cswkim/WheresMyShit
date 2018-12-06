@@ -13,7 +13,7 @@ class PackageListItem extends Component {
       description: null,
       eta: null,
       location: null,
-      logoPath: '',
+      logoPath: null,
       status: status.unknown,
     }
 
