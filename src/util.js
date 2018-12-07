@@ -30,6 +30,16 @@ function getCarrierApi(carrier) {
   return subApi
 }
 
+function getUniqueTrackingEventsByLocation(locations) {
+  const unique = locations.filter((obj, pos, arr) => {
+    let filtered = arr.map(trackingEvent => trackingEvent.getShortLocation())
+    let toCheck = obj.getShortLocation()
+    return filtered.indexOf(toCheck) === pos
+  })
+
+  return unique
+}
+
 function matchTrackingPattern(trackingNum) {
   let carrierKey = null
 
@@ -45,5 +55,6 @@ function matchTrackingPattern(trackingNum) {
 
 module.exports = {
   getCarrierApi,
+  getUniqueTrackingEventsByLocation,
   matchTrackingPattern,
 }

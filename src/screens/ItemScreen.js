@@ -15,6 +15,7 @@ import { WmsStorage } from '../services/WmsStorage'
 import LoadingOverlay from '../components/LoadingOverlay'
 import PackageForm from '../components/PackageForm'
 import TrackingEventListItem from '../components/TrackingEventListItem'
+import TrackingMap from '../components/TrackingMap'
 
 class ItemScreen extends Component {
   static get options() {
@@ -165,9 +166,7 @@ class ItemScreen extends Component {
 
     return (
       <ScrollView>
-        {this.props.isEdit && (
-          <Text style={{backgroundColor:'blue'}}>Map will go here</Text>
-        )}
+        {this.props.isEdit && <TrackingMap events={history} />}
 
         <PackageForm
           parentComponentId={this.props.componentId}
