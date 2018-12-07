@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import { Navigation } from 'react-native-navigation'
 import { config, carriers } from '../config'
 
@@ -39,27 +45,35 @@ class CarriersScreen extends Component {
 
   render() {
     const carrierItems = Object.keys(carriers).map(key =>
-      <Text
+      <TouchableOpacity
         key={key}
         style={styles.carrier}
-        onPress={() => this.onCarrierSelect(key)}>
-        {carriers[key].name}
-      </Text>
+        onPress={() => this.onCarrierSelect(key)}
+      >
+        <Image source={carriers[key].logoPath} style={styles.carrierImage} />
+        <Text>{carriers[key].name}</Text>
+      </TouchableOpacity>
     )
 
     return (
-      <View>
+      <ScrollView>
         {carrierItems}
-      </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   carrier: {
-    height: 60,
-    lineHeight: 60,
-    paddingLeft: 16,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: config.colorSecondary,
+  },
+  carrierImage: {
+    marginRight: 16,
   },
 })
 
