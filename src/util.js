@@ -1,3 +1,4 @@
+import Geocoder from 'react-native-geocoder'
 import { carriers, config } from './config'
 import FedexApi from './services/api/FedexApi'
 import JapanPostApi from './services/api/JapanPostApi'
@@ -30,6 +31,15 @@ function getCarrierApi(carrier) {
   return subApi
 }
 
+function getLatLngFromLocation(location) {
+  return Geocoder.geocodeAddress(location).then(resp => {
+    return resp[0].position
+  }).catch(err => {
+    console.log(`Geocoder error for location '${location}': ${err}`)
+    return null
+  })
+}
+
 function getUniqueTrackingEventsByLocation(locations) {
   const unique = locations.filter((obj, pos, arr) => {
     let filtered = arr.map(trackingEvent => trackingEvent.getShortLocation())
@@ -55,6 +65,7 @@ function matchTrackingPattern(trackingNum) {
 
 module.exports = {
   getCarrierApi,
+  getLatLngFromLocation,
   getUniqueTrackingEventsByLocation,
   matchTrackingPattern,
 }

@@ -1,26 +1,68 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
-import Geocoder from 'react-native-geocoder'
 import MapView, { Marker } from 'react-native-maps'
-import { getUniqueTrackingEventsByLocation } from '../util'
+import { getLatLngFromLocation, getUniqueTrackingEventsByLocation } from '../util'
 
 class TrackingMap extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      events: props.events,
+      markers: [],
+    }
+
+    this.getEventCoords = this.getEventCoords.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.events !== this.state.events) {
+      this.getEventCoords()
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.events !== prevState.events) {
+      return {events: nextProps.events}
+    } else {
+      return null
+    }
+  }
+
+  async getEventCoords() {
+    const unique = getUniqueTrackingEventsByLocation(this.state.events)
+    let validMarkers = []
+
+    for(const event of unique) {
+      const location = event.getShortLocation()
+      const latLng = await getLatLngFromLocation(location)
+
+      if(latLng == null) {
+        continue
+      }
+
+      validMarkers.push({
+        title: location,
+        description: event.description,
+        pos: {lat: latLng.lat, lng: latLng.lng},
+      })
+    }
+
+    this.setState({markers: validMarkers})
   }
 
   render() {
-    const events = getUniqueTrackingEventsByLocation(this.props.events)
+    const markers = this.state.markers
 
     return (
       <View style={styles.container}>
         <MapView style={styles.map}>
-          {events.map((event, index) => (
+          {markers.map((marker, index) => (
             <Marker
               key={index}
-              coordinate={{latitude: 40.687083, longitude: -73.965757}}
-              title={`${event.getShortLocation()}`}
-              description={`${event.description}`}
+              coordinate={{latitude: marker.pos.lat, longitude: marker.pos.lng}}
+              title={`${marker.title}`}
+              description={`${marker.description}`}
             />
           ))}
         </MapView>
