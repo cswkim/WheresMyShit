@@ -45,7 +45,7 @@ class TrackingMap extends Component {
 
       validMarkers.push({
         title: location,
-        description: event.description,
+        description: `${event.description} - ${event.getDateTime()}`,
         pos: {lat: latLng.lat, lng: latLng.lng},
       })
     }
