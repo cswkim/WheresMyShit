@@ -12,12 +12,13 @@ class TrackingMap extends Component {
       markers: [],
     }
 
-    this.getEventCoords = this.getEventCoords.bind(this)
+    this.mapRef = null
+    this.setValidMarkers = this.setValidMarkers.bind(this)
   }
 
   componentDidUpdate(prevProps, prevState) {
     if(prevState.events !== this.state.events) {
-      this.getEventCoords()
+      this.setValidMarkers()
     }
   }
 
@@ -29,7 +30,7 @@ class TrackingMap extends Component {
     }
   }
 
-  async getEventCoords() {
+  async setValidMarkers() {
     const unique = getUniqueTrackingEventsByLocation(this.state.events)
     let validMarkers = []
 
@@ -49,6 +50,9 @@ class TrackingMap extends Component {
     }
 
     this.setState({markers: validMarkers})
+
+    const markerIDs = validMarkers.map((vm, index) => `marker${index}`)
+    this.mapRef.fitToSuppliedMarkers(markerIDs)
   }
 
   render() {
@@ -56,10 +60,14 @@ class TrackingMap extends Component {
 
     return (
       <View style={styles.container}>
-        <MapView style={styles.map}>
+        <MapView
+          ref={ref => this.mapRef = ref}
+          style={styles.map}
+        >
           {markers.map((marker, index) => (
             <Marker
               key={index}
+              identifier={`marker${index}`}
               coordinate={{latitude: marker.pos.lat, longitude: marker.pos.lng}}
               title={`${marker.title}`}
               description={`${marker.description}`}
