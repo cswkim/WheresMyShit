@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Polyline } from 'react-native-maps'
+import { config } from '../config'
 import { getLatLngFromLocation, getUniqueTrackingEventsByLocation } from '../util'
 
 class TrackingMap extends Component {
@@ -57,6 +58,9 @@ class TrackingMap extends Component {
 
   render() {
     const markers = this.state.markers
+    const markerCoords = markers.map(marker => ({
+      latitude: marker.pos.lat, longitude: marker.pos.lng
+    }))
 
     return (
       <View style={styles.container}>
@@ -73,6 +77,14 @@ class TrackingMap extends Component {
               description={`${marker.description}`}
             />
           ))}
+
+          <Polyline
+            coordinates={markerCoords}
+            geodesic={true}
+            lineDashPattern={[5]}
+            strokeColor={`${config.colorBase}`}
+            strokeWidth={2}
+          />
         </MapView>
       </View>
     )
