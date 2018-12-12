@@ -1,4 +1,6 @@
 import {
+  API_DHL_USER,
+  API_DHL_KEY,
   API_FEDEX_USER,
   API_FEDEX_KEY,
   API_FEDEX_ACCOUNT_NUM,
@@ -24,6 +26,11 @@ const carriers = {
     name: "DHL Express",
     pattern: /[0-9]{10}/,
     logoPath: require('./assets/img/logo-dhl.png'),
+    api: {
+      url: 'https://xmlpitest-ea.dhl.com/XMLShippingServlet',
+      user: API_DHL_USER,
+      key: API_DHL_KEY,
+    },
   },
   fedex: {
     name: "FedEx",

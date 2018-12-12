@@ -1,5 +1,6 @@
 import Geocoder from 'react-native-geocoder'
 import { carriers, config } from './config'
+import DhlApi from './services/api/DhlApi'
 import FedexApi from './services/api/FedexApi'
 import JapanPostApi from './services/api/JapanPostApi'
 import UspsApi from './services/api/UspsApi'
@@ -9,6 +10,9 @@ function getCarrierApi(carrier) {
   let subApi = null
 
   switch(carrier) {
+    case 'dhlExpress':
+      subApi = new DhlApi(apiConf.url, apiConf.user, apiConf.key)
+      break
     case 'fedex':
       subApi = new FedexApi(
         apiConf.url,
