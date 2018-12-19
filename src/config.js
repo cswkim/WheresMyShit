@@ -5,6 +5,9 @@ import {
   API_FEDEX_KEY,
   API_FEDEX_ACCOUNT_NUM,
   API_FEDEX_METER_NUM,
+  API_UPS_USER,
+  API_UPS_PASS,
+  API_UPS_KEY,
   API_USPS_USER,
 } from 'react-native-dotenv'
 
@@ -53,6 +56,13 @@ const carriers = {
     name: "UPS",
     pattern: /^1Z[0-9a-zA-Z]{16}$/,
     logoPath: require('./assets/img/logo-ups.png'),
+    api: {
+      // url: 'https://onlinetools.ups.com/rest/Track', // Production
+      url: 'https://wwwcie.ups.com/rest/Track', // Testing
+      user: API_UPS_USER,
+      pass: API_UPS_PASS,
+      key: API_UPS_KEY,
+    },
   },
   usps: {
     name: "USPS",

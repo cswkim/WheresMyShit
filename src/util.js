@@ -3,6 +3,7 @@ import { carriers, config } from './config'
 import DhlApi from './services/api/DhlApi'
 import FedexApi from './services/api/FedexApi'
 import JapanPostApi from './services/api/JapanPostApi'
+import UpsApi from './services/api/UpsApi'
 import UspsApi from './services/api/UspsApi'
 
 function getCarrierApi(carrier) {
@@ -24,6 +25,9 @@ function getCarrierApi(carrier) {
       break
     case 'japanPost':
       subApi = new JapanPostApi(apiConf.url, apiConf.user, apiConf.key)
+      break
+    case 'ups':
+      subApi = new UpsApi(apiConf.url, apiConf.user, apiConf.key, apiConf.pass)
       break
     case 'usps':
       subApi = new UspsApi(apiConf.url, apiConf.user, apiConf.key)
