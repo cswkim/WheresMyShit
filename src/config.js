@@ -1,4 +1,6 @@
 import {
+  API_CP_USER,
+  API_CP_KEY,
   API_DHL_USER,
   API_DHL_KEY,
   API_FEDEX_USER,
@@ -24,6 +26,11 @@ const carriers = {
     name: "Canada Post",
     pattern: /^[a-zA-z]{2}[0-9]{9}[Cc][Aa]$/,
     logoPath: require('./assets/img/logo-canada-post.png'),
+    api: {
+      url: 'https://soa-gw.canadapost.ca/vis/track/pin',
+      user: API_CP_USER,
+      key: API_CP_KEY,
+    },
   },
   dhlExpress: {
     name: "DHL Express",
@@ -75,6 +82,17 @@ const carriers = {
   },
 }
 
+const locationJFK = {
+  city: "JFK Airport",
+  state: "NY",
+  zipCode: "11430",
+  country: "USA",
+}
+
+const locationMap = [
+  {key: 'usjfka', mapped: locationJFK},
+]
+
 const status = {
   unknown: {
     display: "Unknown",
@@ -105,5 +123,6 @@ const status = {
 module.exports = {
   config,
   carriers,
+  locationMap,
   status,
 }
