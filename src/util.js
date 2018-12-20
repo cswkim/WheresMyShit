@@ -1,43 +1,5 @@
 import Geocoder from 'react-native-geocoder'
-import { carriers, config } from './config'
-import DhlApi from './services/api/DhlApi'
-import FedexApi from './services/api/FedexApi'
-import JapanPostApi from './services/api/JapanPostApi'
-import UpsApi from './services/api/UpsApi'
-import UspsApi from './services/api/UspsApi'
-
-function getCarrierApi(carrier) {
-  const apiConf = carriers[carrier].api
-  let subApi = null
-
-  switch(carrier) {
-    case 'dhlExpress':
-      subApi = new DhlApi(apiConf.url, apiConf.user, apiConf.key)
-      break
-    case 'fedex':
-      subApi = new FedexApi(
-        apiConf.url,
-        apiConf.user,
-        apiConf.key,
-        apiConf.accountNum,
-        apiConf.meterNum,
-      )
-      break
-    case 'japanPost':
-      subApi = new JapanPostApi(apiConf.url, apiConf.user, apiConf.key)
-      break
-    case 'ups':
-      subApi = new UpsApi(apiConf.url, apiConf.user, apiConf.key, apiConf.pass)
-      break
-    case 'usps':
-      subApi = new UspsApi(apiConf.url, apiConf.user, apiConf.key)
-      break
-    default:
-      console.log(`Carrier with key ${carrier} is missing information`)
-  }
-
-  return subApi
-}
+import { carriers, locationMap } from './config'
 
 function getLatLngFromLocation(location) {
   return Geocoder.geocodeAddress(location).then(resp => {
@@ -46,6 +8,12 @@ function getLatLngFromLocation(location) {
     console.log(`Geocoder error for location '${location}': ${err}`)
     return null
   })
+}
+
+function getMappedLocation(toDecode) {
+  const result = locationMap.filter(loc => loc.key == toDecode.toLowerCase())
+  const found = result.length > 0 ? result[0].mapped : null
+  return found
 }
 
 function getUniqueTrackingEventsByLocation(locations) {
@@ -72,8 +40,8 @@ function matchTrackingPattern(trackingNum) {
 }
 
 module.exports = {
-  getCarrierApi,
   getLatLngFromLocation,
+  getMappedLocation,
   getUniqueTrackingEventsByLocation,
   matchTrackingPattern,
 }

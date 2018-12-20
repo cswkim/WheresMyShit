@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Swipeout from 'react-native-swipeout'
 import { carriers, config, status } from '../config'
-import { getCarrierApi } from '../util'
+import { getCarrierApi } from '../services/api/_Selector'
 import { WmsStorage } from '../services/WmsStorage'
 import LoadingOverlay from '../components/LoadingOverlay'
 
