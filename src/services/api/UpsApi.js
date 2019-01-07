@@ -62,6 +62,12 @@ class UpsApi extends WmsApi {
 
     if(toCheck.includes('delivered')) {
       mapped = status.delivered
+    } else if(toCheck.includes('out')) {
+      mapped = status.outForDelivery
+    } else if(toCheck.includes('loaded') || toCheck.includes('scan')) {
+      mapped = status.inTransit
+    } else if(toCheck.includes('processed')) {
+      mapped = status.preparing
     } else {
       mapped = status.unknown
     }
@@ -100,7 +106,9 @@ class UpsApi extends WmsApi {
       }
     }
 
-    const validDateTime = eventDate && eventTime ? new Date(`${eventDate} ${eventTime}`) : null
+    const validDate = eventDate ? [eventDate.slice(0, 4), eventDate.slice(4, 6), eventDate.slice(6, 8)].join('-') : null
+    const validTime = eventTime ? [eventTime.slice(0, 2), eventTime.slice(2, 4)].join(':') : null
+    const validDateTime = validDate && validTime ? new Date(`${validDate} ${validTime}`) : null
 
     const eventObj = new WmsTrackingEvent(
       validDateTime,

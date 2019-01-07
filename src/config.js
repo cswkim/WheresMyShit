@@ -64,8 +64,8 @@ const carriers = {
     pattern: /^1Z[0-9a-zA-Z]{16}$/,
     logoPath: require('./assets/img/logo-ups.png'),
     api: {
-      // url: 'https://onlinetools.ups.com/rest/Track', // Production
-      url: 'https://wwwcie.ups.com/rest/Track', // Testing
+      url: 'https://onlinetools.ups.com/rest/Track', // Production
+      // url: 'https://wwwcie.ups.com/rest/Track', // Testing
       user: API_UPS_USER,
       pass: API_UPS_PASS,
       key: API_UPS_KEY,
