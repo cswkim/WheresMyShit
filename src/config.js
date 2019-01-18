@@ -58,6 +58,10 @@ const carriers = {
     name: "Japan Post",
     pattern: /^[A-Za-z]{2}[0-9]{9}JP$/,
     logoPath: require('./assets/img/logo-japan-post.png'),
+    api: {
+      url: '',
+      user: '',
+    },
   },
   ups: {
     name: "UPS",
