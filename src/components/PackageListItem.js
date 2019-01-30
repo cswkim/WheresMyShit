@@ -25,7 +25,7 @@ class PackageListItem extends Component {
   componentDidMount() {
     this.setState({isFetching: true})
 
-    WmsStorage.getItem(this.props.storeKey).then(item => {
+    WmsStorage.getItem(this.props.storeId).then(item => {
       const apiObj = getCarrierApi(item.carrier)
       apiObj.getCurrentTracking(item.trackingNum).then(trackingData => {
         this.setState({
@@ -48,7 +48,7 @@ class PackageListItem extends Component {
   }
 
   onRemoveItem() {
-    this.props.removeCallback(this.props.storeKey)
+    this.props.removeCallback(this.props.storeId)
   }
 
   render() {
@@ -60,7 +60,7 @@ class PackageListItem extends Component {
         right={[{text: 'Delete', type: 'delete', onPress: this.onRemoveItem}]}
         backgroundColor='#fff'
       >
-        <TouchableOpacity onPress={() => this.props.pressCallback(this.props.storeKey)}>
+        <TouchableOpacity onPress={() => this.props.pressCallback(this.props.storeId)}>
           {isFetching && <LoadingOverlay />}
 
           <View style={styles.item}>

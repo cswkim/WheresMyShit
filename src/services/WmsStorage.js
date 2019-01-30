@@ -1,37 +1,44 @@
-import { AsyncStorage } from 'react-native'
 import { config } from '../config'
+import { store } from '../store'
 
 const WmsStorage = {
-  async getItem(key) {
+  async getItem(id) {
     try {
-      const item = await AsyncStorage.getItem(key)
-      return JSON.parse(item)
+      return await store.getState().packagesReducer.find(pkg => pkg.id == id)
     } catch(error) {
-      console.log(`AsyncStorage Error: ${error.message}`)
+      console.log(`WmsStorage.getItem() Error: ${error.message}`)
     }
   },
 
-  async getAllKeys() {
+  async getAll() {
     try {
-      return await AsyncStorage.getAllKeys()
+      return await store.getState().packagesReducer
     } catch(error) {
-      console.log(`AsyncStorage Error: ${error.message}`)
+      console.log(`WmsStorage.getAll() Error: ${error.message}`)
     }
   },
 
-  async removeItem(key) {
+  async saveItem(toSave) {
     try {
-      return await AsyncStorage.removeItem(key)
+      let savedItem = null
+
+      if(toSave.id) {
+        savedItem = await store.dispatch({type: 'EDIT_PACKAGE', item: toSave})
+      } else {
+        savedItem = await store.dispatch({type: 'ADD_PACKAGE', item: toSave})
+      }
+
+      return savedItem
     } catch(error) {
-      console.log(`AsyncStorage Error: ${error.message}`)
+      console.log(`WmsStorage.addItem() Error: ${error.message}`)
     }
   },
 
-  async saveItem(key, value) {
+  async removeItem(id) {
     try {
-      return await AsyncStorage.setItem(`${config.storageKeyIdent}:${key}`, JSON.stringify(value))
+      return await store.dispatch({type: 'REMOVE_PACKAGE', id: id})
     } catch(error) {
-      console.log(`AsyncStorage Error: ${error.message}`)
+      console.log(`WmsStorage.removeItem() Error: ${error.message}`)
     }
   }
 }

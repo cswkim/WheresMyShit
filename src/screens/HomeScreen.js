@@ -28,27 +28,27 @@ class HomeScreen extends Component {
     super(props)
 
     this.state = {
-      allKeys: [],
+      packages: [],
       isFetching: false,
     }
 
     Navigation.events().bindComponent(this)
-    this.fetchKeys = this.fetchKeys.bind(this)
+    this.fetchItems = this.fetchItems.bind(this)
     this.onPressItem = this.onPressItem.bind(this)
     this.onRefresh = this.onRefresh.bind(this)
     this.onRemoveItem = this.onRemoveItem.bind(this)
   }
 
   componentDidMount() {
-    this.fetchKeys()
+    this.fetchItems()
   }
 
-  fetchKeys() {
+  fetchItems() {
     this.setState({isFetching: true})
 
-    WmsStorage.getAllKeys().then(keys => {
+    WmsStorage.getAll().then(allPkgs => {
       this.setState({
-        allKeys: keys,
+        packages: allPkgs,
         isFetching: false,
       })
     })
@@ -60,6 +60,7 @@ class HomeScreen extends Component {
         name: 'ItemScreen',
         passProps: {
           isEdit: false,
+          storeId: null,
         },
         options: {
           topBar: {
@@ -72,13 +73,13 @@ class HomeScreen extends Component {
     })
   }
 
-  onPressItem(key) {
+  onPressItem(id) {
     Navigation.push(this.props.componentId, {
       component: {
         name: 'ItemScreen',
         passProps: {
           isEdit: true,
-          storeKey: key,
+          storeId: id,
         },
         options: {
           topBar: {
@@ -92,27 +93,27 @@ class HomeScreen extends Component {
   }
 
   onRefresh() {
-    this.fetchKeys()
+    this.fetchItems()
   }
 
-  onRemoveItem(key) {
-    WmsStorage.removeItem(key).then(removed => {
-      this.fetchKeys()
+  onRemoveItem(id) {
+    WmsStorage.removeItem(id).then(removed => {
+      this.fetchItems()
     }, error => {
       alert(`DELETE ERROR: ${error}`)
     })
   }
 
   render() {
-    const { allKeys, isFetching } = this.state
+    const { packages, isFetching } = this.state
 
     return (
       <View style={{flex:1}}>
         <FlatList
-          data={allKeys}
+          data={packages}
           renderItem={({item}) => (
             <PackageListItem
-              storeKey={item}
+              storeId={item.id}
               removeCallback={this.onRemoveItem}
               pressCallback={this.onPressItem}
             />

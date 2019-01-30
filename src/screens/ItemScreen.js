@@ -62,7 +62,7 @@ class ItemScreen extends Component {
 
   componentDidMount() {
     if(this.props.isEdit) {
-      WmsStorage.getItem(this.props.storeKey).then(item => {
+      WmsStorage.getItem(this.props.storeId).then(item => {
         const apiObj = getCarrierApi(item.carrier)
 
         this.setState({isFetching: true})
@@ -96,16 +96,19 @@ class ItemScreen extends Component {
         alert(errors.join("\n\n"))
       } else {
         let toSave = {
+          id: this.props.storeId,
           description: this.state.description,
           carrier: this.state.carrier,
           trackingNum: this.state.trackingNum,
         }
-        WmsStorage.saveItem(Date.now().toString(), toSave)
+        WmsStorage.saveItem(toSave)
           .then(item => {
             Navigation.popToRoot(this.props.componentId)
           }, error => {
             alert(`SAVE ERROR: ${error}`)
           })
+
+        Navigation.popToRoot(this.props.componentId)
       }
     }
   }
@@ -142,7 +145,7 @@ class ItemScreen extends Component {
   }
 
   onDeleteConfirm() {
-    WmsStorage.removeItem(this.props.storeKey).then(removed => {
+    WmsStorage.removeItem(this.props.storeId).then(removed => {
       Navigation.popToRoot(this.props.componentId)
     }, error => {
       alert(`DELETE ERROR: ${error}`)

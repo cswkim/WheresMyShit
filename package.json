@@ -16,7 +16,10 @@
     "react-native-maps": "^0.22.1",
     "react-native-navigation": "^2.0.2556",
     "react-native-swipeout": "^2.3.6",
-    "react-xml-parser": "^1.0.8"
+    "react-redux": "^6.0.0",
+    "react-xml-parser": "^1.0.8",
+    "redux": "^4.0.1",
+    "redux-persist": "^5.10.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-async-to-generator": "^7.1.0",
